@@ -12,62 +12,63 @@ const expensesList = document.querySelector('.expenseCollection');
 let budgetValueDisplay = document.querySelector('#budgetValue');
 let balanceValueDisplay = document.querySelector('#balanceValue');
 
-//our running total for our budget
+let itemId = 0;
 let totalFunds = 0;
 
-let itemId = 0;
+let myBudget = {
+  createBudget: function(event) {
+    budgetValueDisplay.innerText = budgetInput.value;
+    balanceValueDisplay.innerText = budgetInput.value;
+    totalFunds = budgetInput.value;
 
-loadEventListeners();
+    budgetInput.value = '';
+    event.preventDefault();
+  },
 
-function loadEventListeners() {
-  calculateBtn.addEventListener('click', createBudget);
-  addExpenseBtn.addEventListener('click', addExpense);
-}
-
-function createBudget(event) {
-  budgetValueDisplay.innerText = budgetInput.value;
-  balanceValueDisplay.innerText = budgetInput.value;
-  totalFunds = budgetInput.value;
-
-  budgetInput.value = '';
-  event.preventDefault();
-}
-
-function addExpense(event) {
-  let expense = {
-    id: itemId,
-    title: expenseTitleInput.value,
-    amount: expenseValueInput.value
-  };
-
-  totalFunds -= expense.amount;
-  balanceValueDisplay.innerText = totalFunds;
-
-  const expenseLi = document.createElement('li');
-  expenseLi.className = 'expenseLi';
-  expenseLi.innerHTML = `
-      <p>${expense.title}</p>
-      <p>:</p>
-      <p class='expenseAmount' id=${expense.id}>${expense.amount}</p>
-    `;
-  const removeButton = document.createElement('icon');
-  removeButton.className = 'fa fa-trash';
-  expenseLi.appendChild(removeButton);
-
-  removeButton.addEventListener('click', () => {
-    const expenseAmount = document.getElementById(`${expense.id}`);
-    const amountToAdd = parseInt(expenseAmount.innerText);
-    totalFunds += amountToAdd;
-
+  addExpense: function(event) {
+    let expense = {
+      id: itemId,
+      title: expenseTitleInput.value,
+      amount: expenseValueInput.value
+    };
+    console.log(expense);
+    totalFunds -= expense.amount;
     balanceValueDisplay.innerText = totalFunds;
 
-    expensesList.removeChild(expenseLi);
-  });
+    const expenseLi = document.createElement('li');
+    expenseLi.className = 'expenseLi';
+    expenseLi.innerHTML = `
+        <p>${expense.title}</p>
+        <p>:</p>
+        <p class='expenseAmount' id=${expense.id}>${expense.amount}</p>
+      `;
+    const removeButton = document.createElement('icon');
+    removeButton.className = 'fa fa-trash';
+    expenseLi.appendChild(removeButton);
 
-  expensesList.appendChild(expenseLi);
+    //remove an added budget item
+    removeButton.addEventListener('click', () => {
+      const expenseAmount = document.getElementById(`${expense.id}`);
+      const amountToAdd = parseInt(expenseAmount.innerText);
+      totalFunds += amountToAdd;
 
-  itemId++;
-  expenseTitleInput.value = '';
-  expenseValueInput.value = '';
-  event.preventDefault();
-}
+      balanceValueDisplay.innerText = totalFunds;
+
+      expensesList.removeChild(expenseLi);
+    });
+
+    expensesList.appendChild(expenseLi);
+
+    itemId++;
+    expenseTitleInput.value = '';
+    expenseValueInput.value = '';
+    event.preventDefault();
+  },
+
+  loadEventListeners: function() {
+    calculateBtn.addEventListener('click', myBudget.createBudget);
+    addExpenseBtn.addEventListener('click', myBudget.addExpense);
+  }
+};
+
+myBudget.loadEventListeners();
