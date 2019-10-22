@@ -46,7 +46,7 @@ let myBudget = {
     removeButton.className = 'fa fa-trash';
     expenseLi.appendChild(removeButton);
 
-    //remove an added budget item
+    //remove an expense
     removeButton.addEventListener('click', () => {
       const expenseAmount = document.getElementById(`${expense.id}`);
       const amountToAdd = parseInt(expenseAmount.innerText);
